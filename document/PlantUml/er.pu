@@ -1,0 +1,20 @@
+@startuml app
+
+entity "Users" as users {
+    +ID : INTEGER
+    *USER_NAME : TEXT
+    *PASSWORD : TEXT
+}
+
+entity "Expenses" as expenses {
+    +ID : INTEGER
+    -USER_ID : INTEGER
+    *EXPENSE_TYPE : INTEGER
+    *AMOUNT : INTEGER
+    *TITLE : TEXT
+    *EXPENSE_DATE : TEXT
+}
+
+users ||--|{ expenses
+
+@enduml
