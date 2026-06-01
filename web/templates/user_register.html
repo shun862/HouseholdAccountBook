@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/login.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <meta name="description" content="ユーザー登録を行う。">
+    <title>家計簿アプリ</title>
+</head>
+
+<body>
+    <main class="login-main">
+        <div class="login-content">
+            <div class="login-header">
+                <i class="bi bi-wallet2 header-icon"></i>
+                <h1 class="title">家計簿アプリ</h1>
+                <p class="subtitle">新規登録してください</p>
+            </div>
+            <form id="registerForm" method="POST" action="/user_register">
+                <!-- ユーザー名 -->
+                <div class="form-group">
+                    <label for="username">ユーザー名</label>
+                    <div class="input-box">
+                        <i class="bi bi-person-fill input-icon"></i>
+                        <input type="text" id="username" name="username" placeholder="ユーザー名を入力">
+                    </div>
+                    <p id="usernameError" class="error-message"></p>
+                </div>
+
+                <!-- パスワード -->
+                <div class="form-group">
+                    <label for="password">パスワード</label>
+                    <div class="input-box">
+                        <i class="bi bi-lock-fill input-icon"></i>
+                        <input id="password" type="password" name="password" placeholder="パスワードを入力">
+                        <button type="button" class="eye-btn" onclick="togglePassword()">
+                            <i id="eyeIcon" class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <p id="passwordError" class="error-message"></p>
+                </div>
+                <button type="submit" class="register-btn">
+                    新規登録
+                </button>
+            </form>
+            <div class="login-area">
+                <a href="/login">ログイン</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const eye =
+                document.getElementById("eyeIcon");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+                eye.classList.remove("bi-eye");
+                eye.classList.add("bi-eye-slash");
+
+            } else {
+
+                password.type = "password";
+
+                eye.classList.remove("bi-eye-slash");
+                eye.classList.add("bi-eye");
+            }
+        }
+    </script>
+</body>
+
+</html>
