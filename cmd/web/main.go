@@ -30,9 +30,9 @@ func main() {
 
 	// 静的ファイル配信
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../../web/css"))))
-
+	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("../../web/js"))))
 	// ルーティング
-	http.HandleFunc("/user_register", userHandler.HandleFunc)
+	http.HandleFunc("/user_register", userHandler.RegisterHandleFunc)
 
 	fmt.Println("server start :8080")
 	// サーバー起動

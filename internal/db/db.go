@@ -17,7 +17,7 @@ func OpenDB() (*sql.DB, error) {
 	query := `
 	CREATE TABLE IF NOT EXISTS users(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_name TEXT NOT NULL,
+		user_name TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
 	)
     `

@@ -25,9 +25,9 @@
                     <label for="username">ユーザー名</label>
                     <div class="input-box">
                         <i class="bi bi-person-fill input-icon"></i>
-                        <input type="text" id="username" name="username" placeholder="ユーザー名を入力">
+                        <input type="text" id="username" name="username" value="{{.Username}}" placeholder="ユーザー名を入力">
                     </div>
-                    <p id="usernameError" class="error-message"></p>
+                    <p id="usernameError" class="error-message">{{.UsernameError}}</p>
                 </div>
 
                 <!-- パスワード -->
@@ -40,42 +40,21 @@
                             <i id="eyeIcon" class="bi bi-eye"></i>
                         </button>
                     </div>
-                    <p id="passwordError" class="error-message"></p>
+                    <p id="passwordError" class="error-message">{{.PasswordError}}</p>
                 </div>
-                <button type="submit" class="register-btn">
+                <button type="submit" class="execute-btn">
                     新規登録
                 </button>
             </form>
-            <div class="login-area">
+            <div class="link-area">
                 <a href="/login">ログイン</a>
             </div>
         </div>
     </main>
-
+    
+    <script src="/js/userAuth.js"></script>
     <script>
-        function togglePassword() {
-
-            const password =
-                document.getElementById("password");
-
-            const eye =
-                document.getElementById("eyeIcon");
-
-            if (password.type === "password") {
-
-                password.type = "text";
-
-                eye.classList.remove("bi-eye");
-                eye.classList.add("bi-eye-slash");
-
-            } else {
-
-                password.type = "password";
-
-                eye.classList.remove("bi-eye-slash");
-                eye.classList.add("bi-eye");
-            }
-        }
+        validateAuth("registerForm");
     </script>
 </body>
 

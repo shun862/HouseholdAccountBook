@@ -16,7 +16,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 .header-icon {
@@ -96,7 +96,7 @@ input[type="password"]::-ms-clear {
     display: none;
 }
 
-.register-btn {
+.execute-btn {
     display: block;
     width: 88%;
     height: 72px;
@@ -114,19 +114,23 @@ input[type="password"]::-ms-clear {
     cursor: pointer;
 }
 
-.register-btn:hover {
+.execute-btn:hover {
     opacity: 0.95;
 }
 
-.login-area {
+.link-area {
     text-align: center;
     padding-top: 30px;
     padding-bottom: 60px;
 }
 
-.login-area a {
+.link-area a {
     text-decoration: none;
     color: #2563eb;
     font-size: 20px;
-    font-weight: 700;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
 }
