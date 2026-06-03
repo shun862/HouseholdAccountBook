@@ -2,6 +2,9 @@ package repository
 
 import (
 	"database/sql"
+	"household_account_book/internal/model"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepository struct {
@@ -31,4 +34,23 @@ func (repo *UserRepository) CheckSameUser(username string) (bool, error) {
 
 	hasSameUser := count > 0
 	return hasSameUser, err
+}
+
+func (repo *UserRepository) FindUser(username string, password string) (*model.User, error) {
+	query := `
+	SELECT id, user_name, password FROM users WHERE user_name = ?
+	`
+	var user model.User
+	err := repo.DB.QueryRow(query, username).Scan(&user.Id, &user.UserName, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	// パスワード照合
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		// パスワード不一致
+		return nil, nil
+	}
+
+	return &user, nil
 }

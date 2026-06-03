@@ -1,12 +1,16 @@
 package handler
 
 import (
+	"household_account_book/internal/consts"
+	"household_account_book/internal/model"
 	"household_account_book/internal/repository"
 	"log"
 	"net/http"
 	"strings"
 	"text/template"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,10 +35,7 @@ func (handler *UserHandler) RegisterHandleFunc(w http.ResponseWriter, r *http.Re
 		password := strings.TrimSpace(r.FormValue("password"))
 		info := userRegisterValidation(username, password, handler.Repo)
 		if info.HasError {
-			temp, _ := template.ParseFiles(
-				"../../web/templates/user_register.html",
-			)
-			temp.Execute(w, info)
+			showView(w, consts.UserRegisterFile, info)
 			return
 		}
 
@@ -44,19 +45,74 @@ func (handler *UserHandler) RegisterHandleFunc(w http.ResponseWriter, r *http.Re
 			log.Fatal(err)
 		}
 
-		http.Redirect(
-			w,
-			r,
-			"/login",
-			http.StatusSeeOther,
-		)
+		http.Redirect(w, r, consts.LoginUrl, http.StatusSeeOther)
 	} else {
-		temp, err := template.ParseFiles("../../web/templates/user_register.html")
+		showView(w, consts.UserRegisterFile, ViewInfo{})
+	}
+}
+
+func (handler *UserHandler) LoginHandleFunc(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		username := strings.TrimSpace(r.FormValue("username"))
+		password := strings.TrimSpace(r.FormValue("password"))
+		info := ViewInfo{
+			Username: username,
+		}
+		validation(username, password, &info)
+		if info.HasError {
+			showView(w, consts.LoginFile, info)
+			return
+		}
+
+		// ユーザー情報取得
+		user, err := handler.Repo.FindUser(username, password)
 		if err != nil {
 			log.Fatal(err)
 		}
-		temp.Execute(w, ViewInfo{})
+		// 未登録ユーザーの場合
+		if user == nil {
+			info.UsernameError = "未登録のユーザーです"
+			info.PasswordError = "未登録のユーザーです"
+			info.HasError = true
+			showView(w, consts.LoginFile, info)
+			return
+		}
+
+		expirationTime := time.Now().Add(time.Hour * 1)
+		claims := &model.JwtCustomClaims{
+			Id:       user.Id,
+			Username: username,
+			Password: user.Password,
+			RegisteredClaims: jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(expirationTime),
+			},
+		}
+		// トークン生成
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		// トークンに署名
+		tokenString, _ := token.SignedString([]byte(consts.JwtKey))
+
+		// Cookie に JWT を保存
+		http.SetCookie(w, &http.Cookie{
+			Name:     consts.TokenName,
+			Value:    tokenString,
+			Expires:  expirationTime,
+			HttpOnly: true,
+			Path:     consts.CookiePath,
+		})
+
+		http.Redirect(w, r, consts.AddExpenseUrl, http.StatusSeeOther)
+	} else {
+		showView(w, consts.LoginFile, ViewInfo{})
 	}
+}
+
+func showView(w http.ResponseWriter, fileName string, info ViewInfo) {
+	temp, err := template.ParseFiles(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	temp.Execute(w, info)
 }
 
 func userRegisterValidation(username string, password string, repo *repository.UserRepository) ViewInfo {
