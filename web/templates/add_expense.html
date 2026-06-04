@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/header.css" rel="stylesheet">
+    <link href="/css/add_expense.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <meta name="description" content="家計簿情報一覧。">
+    <title>追加</title>
+</head>
+
+<body>
+    {{template "header" .}}
+    <main>
+        <div class="add-content">
+            <h2>収支追加</h2>
+            <form id="add-form" action="/add_expense" method="POST">
+                <div class="content-title">
+                    <h3>タイトル</h3>
+                    <input type="text" id="title" name="title" placeholder="例）ランチ代" maxlength="20">
+                    <p id="title-error" class="error-message"></p>
+                </div>
+                <div class="content-type">
+                    <h3>種別</h3>
+                    <div class="radio-group">
+                        <label class="type-radio">
+                            <input type="radio" id="expense" name="type" checked>
+                            <span class="custom-radio"></span>
+                            <p>支出</p>
+                        </label>
+                        <label class="type-radio">
+                            <input type="radio" id="income" name="type">
+                            <span class="custom-radio"></span>
+                            <p>収入</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="content-amount">
+                    <h3>金額</h3>
+                    <input type="text" id="amount" name="amount" placeholder="例）5000" maxlength="10">
+                    <p id="amount-error" class="error-message"></p>
+                </div>
+                <div class="content-date">
+                    <h3>日付</h3>
+                    <input type="date" id="date" name="date">
+                </div>
+                <input class="add-button" type="submit" value="追加する">
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // 金額の入力制限
+        document.getElementById("amount").addEventListener("input", function () {
+            // 数字以外を除去
+            this.value = this.value.replace(/\D/g, "");
+        });
+        // 日付の初期表示を当日に設定
+        const today = new Date().toISOString().split("T")[0];
+        var date = document.getElementById("date");
+        date.value = date.max = today;
+        // バリデーション
+        document.getElementById("add-form").addEventListener("submit", function (e) {
+            var isValid = true;
+            const title = document.getElementById("title").value.trim();
+            const amount = document.getElementById("amount").value;
+            const amountNum = Number(amount);
+            const titleError = document.getElementById("title-error");
+            const amountError = document.getElementById("amount-error");
+            titleError.textContent = "";
+            amountError.textContent = "";
+
+            // タイトルチェック
+            if (title === "") {
+                titleError.textContent = "タイトルを入力してください";
+                isValid = false;
+            }
+
+            // 金額チェック
+            if (amount === "" || amountNum === 0 || Number.isNaN(amountNum)) {
+                amountError.textContent = "1以上の値を入力してください";
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+
+</html>

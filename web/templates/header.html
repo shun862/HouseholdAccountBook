@@ -1,0 +1,18 @@
+{{define "header"}}
+<header>
+    <div class="expense-header">
+        <div class="header-title">
+            <i class="bi bi-wallet2 header-icon"></i>
+            <h2>家計簿アプリ</h2>
+        </div>
+        <nav class="header-nav">
+            <ul>
+                <li><a href="user/list" class="{{if eq .CurrentPage `list`}}active{{end}}">一覧</a></li>
+                <li><a href="/user/add_expense" class="{{if eq .CurrentPage `add_expense`}}active{{end}}">収支追加</a></li>
+                <li><a href="">レポート</a></li>
+                <li><a href="/logout">ログアウト</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+{{end}}

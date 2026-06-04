@@ -25,7 +25,7 @@
                     <label for="username">ユーザー名</label>
                     <div class="input-box">
                         <i class="bi bi-person-fill input-icon"></i>
-                        <input type="text" id="username" name="username" value="{{.Username}}" placeholder="ユーザー名を入力">
+                        <input type="text" id="username" name="username" value="{{.Username}}" placeholder="ユーザー名を入力" maxlength="10">
                     </div>
                     <p id="usernameError" class="error-message">{{.UsernameError}}</p>
                 </div>
@@ -35,7 +35,7 @@
                     <label for="password">パスワード</label>
                     <div class="input-box">
                         <i class="bi bi-lock-fill input-icon"></i>
-                        <input id="password" type="password" name="password" placeholder="パスワードを入力">
+                        <input id="password" type="password" name="password" placeholder="パスワードを入力" maxlength="12">
                         <button type="button" class="eye-btn" onclick="togglePassword()">
                             <i id="eyeIcon" class="bi bi-eye"></i>
                         </button>

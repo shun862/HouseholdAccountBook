@@ -18,11 +18,11 @@ type UserHandler struct {
 	Repo *repository.UserRepository
 }
 
-type ViewInfo struct {
+type UserViewInfo struct {
 	Username      string
 	UsernameError string
 	PasswordError string
-	HasError      bool
+	IsError       bool
 }
 
 func NewUserHandler(repo *repository.UserRepository) *UserHandler {
@@ -34,7 +34,7 @@ func (handler *UserHandler) RegisterHandleFunc(w http.ResponseWriter, r *http.Re
 		username := strings.TrimSpace(r.FormValue("username"))
 		password := strings.TrimSpace(r.FormValue("password"))
 		info := userRegisterValidation(username, password, handler.Repo)
-		if info.HasError {
+		if info.IsError {
 			showView(w, consts.UserRegisterFile, info)
 			return
 		}
@@ -47,7 +47,7 @@ func (handler *UserHandler) RegisterHandleFunc(w http.ResponseWriter, r *http.Re
 
 		http.Redirect(w, r, consts.LoginUrl, http.StatusSeeOther)
 	} else {
-		showView(w, consts.UserRegisterFile, ViewInfo{})
+		showView(w, consts.UserRegisterFile, UserViewInfo{})
 	}
 }
 
@@ -55,11 +55,11 @@ func (handler *UserHandler) LoginHandleFunc(w http.ResponseWriter, r *http.Reque
 	if r.Method == http.MethodPost {
 		username := strings.TrimSpace(r.FormValue("username"))
 		password := strings.TrimSpace(r.FormValue("password"))
-		info := ViewInfo{
+		info := UserViewInfo{
 			Username: username,
 		}
-		validation(username, password, &info)
-		if info.HasError {
+		userValidation(username, password, &info)
+		if info.IsError {
 			showView(w, consts.LoginFile, info)
 			return
 		}
@@ -73,7 +73,7 @@ func (handler *UserHandler) LoginHandleFunc(w http.ResponseWriter, r *http.Reque
 		if user == nil {
 			info.UsernameError = "未登録のユーザーです"
 			info.PasswordError = "未登録のユーザーです"
-			info.HasError = true
+			info.IsError = true
 			showView(w, consts.LoginFile, info)
 			return
 		}
@@ -98,16 +98,16 @@ func (handler *UserHandler) LoginHandleFunc(w http.ResponseWriter, r *http.Reque
 			Value:    tokenString,
 			Expires:  expirationTime,
 			HttpOnly: true,
-			Path:     consts.CookiePath,
+			Path:     consts.CookieValidPath,
 		})
 
 		http.Redirect(w, r, consts.AddExpenseUrl, http.StatusSeeOther)
 	} else {
-		showView(w, consts.LoginFile, ViewInfo{})
+		showView(w, consts.LoginFile, UserViewInfo{})
 	}
 }
 
-func showView(w http.ResponseWriter, fileName string, info ViewInfo) {
+func showView(w http.ResponseWriter, fileName string, info UserViewInfo) {
 	temp, err := template.ParseFiles(fileName)
 	if err != nil {
 		log.Fatal(err)
@@ -115,49 +115,49 @@ func showView(w http.ResponseWriter, fileName string, info ViewInfo) {
 	temp.Execute(w, info)
 }
 
-func userRegisterValidation(username string, password string, repo *repository.UserRepository) ViewInfo {
-	info := ViewInfo{
+func (handler *UserHandler) LogoutHandleFunc(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     consts.TokenName,
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		Path:     consts.CookieValidPath,
+		HttpOnly: true,
+	})
+	http.Redirect(w, r, consts.LoginUrl, http.StatusSeeOther)
+}
+
+func userRegisterValidation(username string, password string, repo *repository.UserRepository) UserViewInfo {
+	info := UserViewInfo{
 		Username: username,
 	}
 
 	// 共通バリデーション
-	validation(username, password, &info)
+	userValidation(username, password, &info)
 
-	if info.HasError {
+	if info.IsError {
 		return info
-	}
-
-	// 同一ユーザーの存在チェック
-	hasSameUser, err := repo.CheckSameUser(username)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if hasSameUser {
-		info.UsernameError = "すでに登録済みのユーザーです"
-		info.PasswordError = "すでに登録済みのユーザーです"
-		info.HasError = true
 	}
 
 	return info
 }
 
 // 共通バリデーション
-func validation(username string, password string, info *ViewInfo) {
+func userValidation(username string, password string, info *UserViewInfo) {
 	// ユーザー名
 	if username == "" {
 		info.UsernameError = "ユーザー名を入力してください"
-		info.HasError = true
+		info.IsError = true
 	} else if len := len([]rune(username)); len < 4 || len > 10 {
 		info.UsernameError = "ユーザー名は4～10文字で入力してください"
-		info.HasError = true
+		info.IsError = true
 	}
 
 	// パスワード
 	if password == "" {
 		info.PasswordError = "パスワードを入力してください"
-		info.HasError = true
+		info.IsError = true
 	} else if len := len([]rune(password)); len < 8 || len > 12 {
 		info.PasswordError = "パスワードは8～12文字で入力してください"
-		info.HasError = true
+		info.IsError = true
 	}
 }

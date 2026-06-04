@@ -1,0 +1,113 @@
+body{
+    background-color: #e2e3e5;
+}
+
+main{
+    width: 560px;
+    height: 100%;
+    margin: 80px 60px 100px 60px;
+}
+
+.add-content{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 40px 20px;
+    border-radius: 4px;
+}
+
+.add-content h3{
+ font-size: 20px;
+ padding-bottom: 10px;
+}
+
+.content-title{
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+.content-title > input,
+.content-amount > input,
+.content-date > input
+{
+    width: 100%;
+    height: 50px;
+    border: 2px solid #e2e3e5;
+    font-size: 20px;
+    border-radius: 8px;
+    padding-left: 10px;
+}
+
+.content-title input:focus,
+.content-amount input:focus,
+.content-date > input:focus{
+    outline: 0;
+    border: 3px solid rgb(65, 159, 235);
+}
+
+.content-type{
+    padding-bottom: 40px;
+}
+
+.radio-group{
+    display: flex;
+    gap: 50px;
+}
+
+.type-radio{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.type-radio input[type="radio"] {
+    display: none;
+}
+
+.custom-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.type-radio input[type="radio"]:checked + .custom-radio{
+    border: 6px solid #2563eb;
+}
+
+.content-amount{
+    padding-bottom: 40px;
+}
+
+/* スピンボタン（上下矢印）を非表示 */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.content-date{
+    padding-bottom: 40px;
+}
+
+.add-button{
+    width: 100%;
+    height: 60px;
+    border: none;
+    color: white;
+    background-color: #2563eb;
+    border-radius: 8px;
+    padding-bottom: 60px;
+    font-size: 20px;
+    line-height: 60px;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
+    height: 20px;
+}

@@ -39,6 +39,7 @@ func main() {
 	// ルーティング
 	http.HandleFunc(consts.UserRegisterUrl, userHandler.RegisterHandleFunc)
 	http.HandleFunc(consts.LoginUrl, userHandler.LoginHandleFunc)
+	http.HandleFunc(consts.LogoutUrl, userHandler.LogoutHandleFunc)
 	http.Handle(consts.AddExpenseUrl, authMiddleware(http.HandlerFunc(addExpenseHandler.HandleFunc)))
 
 	fmt.Println("server start :8080")
