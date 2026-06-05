@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"household_account_book/internal/consts"
 	"household_account_book/internal/model"
 	"household_account_book/internal/repository"
@@ -160,4 +161,11 @@ func userValidation(username string, password string, info *UserViewInfo) {
 		info.PasswordError = "パスワードは8～12文字で入力してください"
 		info.IsError = true
 	}
+}
+
+func GetUserID(ctx context.Context) int {
+	if v := ctx.Value(consts.UserIDKey); v != nil {
+		return v.(int)
+	}
+	return 0
 }

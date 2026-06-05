@@ -26,3 +26,11 @@ const (
 const JwtKey = "anhifsjsa32gjjis"
 const TokenName = "auth_token"
 const CookieValidPath = "/"
+const UserIDKey = "userID"
+
+// フォーマット
+const DateFormatH = "2006-01-02"
+const DateFormatS = "2006/01/02"
+
+const StoreKey = "store_key"
+const SessionName = "session_name"

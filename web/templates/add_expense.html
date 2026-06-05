@@ -15,24 +15,32 @@
 <body>
     {{template "header" .}}
     <main>
+        {{if .Message}}
+        <div id="flash-message" class="flash-message">
+            {{.Message}}
+        </div>
+        {{end}}
+
         <div class="add-content">
             <h2>収支追加</h2>
-            <form id="add-form" action="/add_expense" method="POST">
+            <form id="add-form" action="add_expense" method="POST">
                 <div class="content-title">
                     <h3>タイトル</h3>
-                    <input type="text" id="title" name="title" placeholder="例）ランチ代" maxlength="20">
+                    <input type="text" id="title" name="title" value="{{ .Title }}" placeholder="例）ランチ代" maxlength="20">
                     <p id="title-error" class="error-message"></p>
                 </div>
                 <div class="content-type">
                     <h3>種別</h3>
                     <div class="radio-group">
                         <label class="type-radio">
-                            <input type="radio" id="expense" name="type" checked>
+                            <input type="radio" id="expense" name="type" value="0" {{ if eq .ExpenseType 0 }}checked{{
+                                end }}>
                             <span class="custom-radio"></span>
                             <p>支出</p>
                         </label>
                         <label class="type-radio">
-                            <input type="radio" id="income" name="type">
+                            <input type="radio" id="income" name="type" value="1" {{ if eq .ExpenseType 1 }}checked{{
+                                end }}>
                             <span class="custom-radio"></span>
                             <p>収入</p>
                         </label>
@@ -40,12 +48,13 @@
                 </div>
                 <div class="content-amount">
                     <h3>金額</h3>
-                    <input type="text" id="amount" name="amount" placeholder="例）5000" maxlength="10">
+                    <input type="text" id="amount" name="amount" value="{{ .Amount }}" placeholder="例）5000"
+                        maxlength="10">
                     <p id="amount-error" class="error-message"></p>
                 </div>
                 <div class="content-date">
                     <h3>日付</h3>
-                    <input type="date" id="date" name="date">
+                    <input type="date" id="date" name="date" value="{{ .ExpenseDate }}">
                 </div>
                 <input class="add-button" type="submit" value="追加する">
             </form>
@@ -59,9 +68,9 @@
             this.value = this.value.replace(/\D/g, "");
         });
         // 日付の初期表示を当日に設定
-        const today = new Date().toISOString().split("T")[0];
-        var date = document.getElementById("date");
-        date.value = date.max = today;
+        // const today = new Date().toISOString().split("T")[0];
+        // var date = document.getElementById("date");
+        // date.value = date.max = today;
         // バリデーション
         document.getElementById("add-form").addEventListener("submit", function (e) {
             var isValid = true;

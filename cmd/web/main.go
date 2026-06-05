@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"household_account_book/internal/consts"
 	"household_account_book/internal/db"
@@ -11,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -27,11 +29,13 @@ func main() {
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+	// CookieStoreを作成
+	var store = sessions.NewCookieStore([]byte(consts.StoreKey))
 
 	userRepo := repository.NewUserRepository(db)
 	userHandler := handler.NewUserHandler(userRepo)
 	expenseRepo := repository.NewExpenseRepository(db)
-	addExpenseHandler := handler.NewAddExpenseHandler(expenseRepo)
+	addExpenseHandler := handler.NewAddExpenseHandler(expenseRepo, store)
 
 	// 静的ファイル配信
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../../web/css"))))
@@ -72,6 +76,8 @@ func authMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), consts.UserIDKey, claims.Id)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
