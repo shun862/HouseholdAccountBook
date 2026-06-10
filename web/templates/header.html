@@ -9,7 +9,7 @@
             <ul>
                 <li><a href="/user/list" class="{{if eq .CurrentPage `list`}}active{{end}}">一覧</a></li>
                 <li><a href="/user/add_expense" class="{{if eq .CurrentPage `add_expense`}}active{{end}}">収支追加</a></li>
-                <li><a href="">レポート</a></li>
+                <li><a href="/user/report" class="{{if eq .CurrentPage `report`}}active{{end}}">レポート</a></li>
                 <li><a href="/logout">ログアウト</a></li>
             </ul>
         </nav>
