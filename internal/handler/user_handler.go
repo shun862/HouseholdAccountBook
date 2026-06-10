@@ -102,7 +102,7 @@ func (handler *UserHandler) LoginHandleFunc(w http.ResponseWriter, r *http.Reque
 			Path:     consts.CookieValidPath,
 		})
 
-		http.Redirect(w, r, consts.AddExpenseUrl, http.StatusSeeOther)
+		http.Redirect(w, r, consts.ExpenseListUrl, http.StatusSeeOther)
 	} else {
 		showView(w, consts.LoginFile, UserViewInfo{})
 	}

@@ -1,0 +1,115 @@
+body {
+  background-color: #e2e3e5;
+}
+
+main {
+  width: 560px;
+  height: 100%;
+  margin: 80px 60px 100px 60px;
+}
+
+.list-content {
+  background-color: white;
+  width: 100%;
+  min-height: 800px;
+  /* border: 1px solid; */
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 20px 10px;
+}
+
+.content-date {
+  padding: 0px 10px;
+}
+
+.date-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.date-select input[type="date"] {
+  width: 120px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.date-select input[type="submit"] {
+  width: 50px;
+  height: 40px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+.content-list {
+  height: 1060px;
+  overflow-y: auto;
+  border: 2px solid #ccc;
+  border-collapse: separate;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th {
+  height: 60px;
+  padding-top: 10px;
+  padding-left: 10px;
+  background-color: #e2e3e5;
+  text-align: left;
+}
+
+table td {
+  height: 50px;
+  padding: 0px 10px;
+  font-weight: 500;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  line-height: 20px;
+}
+
+.hdate {
+  width: 20%;
+}
+
+.hamount {
+  width: 28%;
+}
+
+.htitle {
+  width: 37%;
+}
+
+.htype {
+  width: 15%;
+}
+
+.type {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 4px 10px;
+}
+
+.type.expense {
+  background-color: rgb(255, 224, 224);
+}
+
+.type.income {
+  background: #eef4ff;
+}
+
+.expense {
+  color: red;
+}
+
+.income {
+  color: #2563eb;
+}

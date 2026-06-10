@@ -36,6 +36,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userRepo)
 	expenseRepo := repository.NewExpenseRepository(db)
 	addExpenseHandler := handler.NewAddExpenseHandler(expenseRepo, store)
+	ExpenseListHandler := handler.NewExpenseListHandler(expenseRepo)
 
 	// 静的ファイル配信
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("../../web/css"))))
@@ -45,6 +46,7 @@ func main() {
 	http.HandleFunc(consts.LoginUrl, userHandler.LoginHandleFunc)
 	http.HandleFunc(consts.LogoutUrl, userHandler.LogoutHandleFunc)
 	http.Handle(consts.AddExpenseUrl, authMiddleware(http.HandlerFunc(addExpenseHandler.HandleFunc)))
+	http.Handle(consts.ExpenseListUrl, authMiddleware(http.HandlerFunc(ExpenseListHandler.HandleFunc)))
 
 	fmt.Println("server start :8080")
 	// サーバー起動

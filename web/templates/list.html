@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/list.css" rel="stylesheet">
+    <link href="/css/header.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <meta name="description" content="家計簿情報一覧。">
+    <title>一覧</title>
+</head>
+
+<body>
+    {{template "header" .}}
+    <main>
+        <h2>収支一覧</h2>
+        <div class="list-content">
+            <form action="/user/list" method="GET">
+                <div class="content-date">
+                    <h3>期間</h3>
+                    <div class="date-select">
+                        <input type="date" id="start" name="start" value="{{ .StartDate }}">
+                        <p>～</p>
+                        <input type="date" id="end" name="end" value="{{ .EndDate }}">
+                        <input type="submit" class="update-button" value="検索">
+                    </div>
+                </div>
+            </form>
+            <div class="content-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="hdate">日付</th>
+                            <th class="htitle">タイトル</th>
+                            <th class="htype">種別</th>
+                            <th class="hamount">金額</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .Expenses }}
+                        <tr>
+                            <td>{{.ExpenseDate}}</td>
+                            <td>{{.Title}}</td>
+                            <td>
+                                <span class="type {{if eq .ExpenseType 1}}income{{else}}expense{{end}}">
+                                    {{if eq .ExpenseType 0}}支出{{else}}収入{{end}}
+                                </span>
+                            </td>
+                            <td class="amount {{if eq .ExpenseType 1}}income{{else}}expense{{end}}"> 
+                                {{if eq .ExpenseType 0}}-{{end}}{{.Amount}}円
+                            </td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

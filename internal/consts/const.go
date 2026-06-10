@@ -6,6 +6,7 @@ const (
 	LoginUrl        = "/login"
 	LogoutUrl       = "/logout"
 	AddExpenseUrl   = "/user/add_expense"
+	ExpenseListUrl  = "/user/list"
 )
 
 // HTMLファイル情報
@@ -14,12 +15,14 @@ const (
 	UserRegisterFile = filePath + "/user_register.html"
 	LoginFile        = filePath + "/login.html"
 	AddExpenseFile   = filePath + "/add_expense.html"
+	ExpenseListFile  = filePath + "/list.html"
 	HeaderFile       = filePath + "/header.html"
 )
 
 // ログイン後画面の画面名
 const (
-	AddExpenseViewName = "add_expense"
+	AddExpenseViewName  = "add_expense"
+	ExpenseListViewName = "list"
 )
 
 // 認証情報
