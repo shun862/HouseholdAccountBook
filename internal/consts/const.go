@@ -37,6 +37,7 @@ const UserIDKey = "userID"
 // フォーマット
 const DateFormatH = "2006-01-02"
 const DateFormatS = "2006/01/02"
+const DateFormatJ = "2006年1月"
 
 const StoreKey = "store_key"
 const SessionName = "session_name"

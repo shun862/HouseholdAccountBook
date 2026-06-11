@@ -19,176 +19,44 @@
         <h2>収支レポート</h2>
         <div class="content-display-date">
             <span>表示期間</span>
-            <select class="display-date" name="display">
-                <option value="0">直近6ヶ月</option>
-            </select>
+            <form method="GET">
+                <select class="display-date" name="display" onchange="this.form.submit()">
+                    <option value="0" {{if eq .DisplayType 0}}selected{{end}}>直近6ヶ月</option>
+                    <option value="1" {{if eq .DisplayType 1}}selected{{end}}>直近3ヶ月</option>
+                </select>
+            </form>
         </div>
         <div class="content-graph">
+            <div class="amount">金額（円）</div>
             <canvas id="report-chart"></canvas>
         </div>
+        <div class="content-total">
+            <h3 id="total-htitle">集計</h3>
+            <div class="total-list">
+                <div class="total-card total-income">
+                    <p class="total-title">収入</p>
+                    <p class="total-amount" id="income-amount"></p>
+                </div>
+                <div class="total-card total-expense">
+                    <p class="total-title">支出</p>
+                    <p class="total-amount" id="expense-amount"></p>
+                </div>
+                <div class="total-card total-balance">
+                    <p class="total-title">収支</p>
+                    <p class="total-amount" id="balance-amount"></p>
+                </div>
+            </div>
+        </div>
+        <p class="note">※グラフは月ごとの合計金額を表示しています</p>
     </main>
 
+    <script src="/js/report.js"></script>
     <script>
-        const labels = {{ .MonthJSON }};
-        const incomeData = {{ .IncomeJSON }};
-        const expenseData = {{ .ExpenseJSON }};
-        // 最大値
-        const maxValue = Math.max(...incomeData, ...expenseData);
-        const ceilMaxValue = CeilMaxValue(maxValue);
-        // 中間値
-        const stepValue = ceilMaxValue / 2;
-
-        // 選択月インデックス
-        let currentMonthIndex = labels.length - 1;
-
-        // 選択月強調表示
-        const highlightPlugin = {
-            id: "highlightCurrentMonth",
-            beforeDraw(chart) {
-                if (currentMonthIndex === null) {
-                    return;
-                }
-
-                const {
-                    ctx,
-                    chartArea,
-                    scales
-                } = chart;
-
-                const xScale = scales.x;
-                const center = xScale.getPixelForValue(
-                    currentMonthIndex
-                );
-                const width = xScale.width / labels.length;
-
-                ctx.save();
-
-                ctx.fillStyle = "rgba(37, 99, 235, 0.08)";
-                ctx.fillRect(
-                    center - width / 2,
-                    chartArea.top - 20,
-                    width,
-                    chartArea.bottom - chartArea.top + 50
-                );
-
-                ctx.restore();
-            }
-        };
-        // 凡例の余白
-        const legendMarginPlugin = {
-            id: 'legendMargin',
-            beforeInit(chart) {
-                const originalFit = chart.legend.fit;
-                chart.legend.fit = function () {
-                    originalFit.bind(chart.legend)();
-                    this.height += 30;
-                };
-            }
-        };
-
-        const chart = new Chart(document.getElementById("report-chart"), {
-            type: "bar",
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: "収入",
-                        data: incomeData,
-                        backgroundColor: "#2563eb",
-                        borderRadius: 5,
-                        categoryPercentage: 0.7,
-                        barPercentage: 0.8
-                    },
-                    {
-                        label: "支出",
-                        data: expenseData,
-                        backgroundColor: "#ef4444",
-                        categoryPercentage: 0.7,
-                        barPercentage: 0.8
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: stepValue
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: "top",
-                        labels: {
-                            boxWidth: 20,
-                            boxHeight: 12,
-                            padding: 30,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
-                },
-            },
-            plugins: [
-                highlightPlugin,
-                legendMarginPlugin
-            ],
-        });
-
-        // 月選択イベント
-        document.getElementById("report-chart").onclick = function (event) {
-            const points = chart.getElementsAtEventForMode(
-                event,
-                "index",
-                {
-                    intersect: false
-                },
-                true
-            );
-
-            if (points.length > 0) {
-                currentMonthIndex = points[0].index;
-                chart.update();
-            }
-        };
-
-        function CeilMaxValue(maxValue) {
-            if (maxValue <= 10000) return 10000;
-            return Math.ceil(maxValue / 10000) * 10000;
-        }
-
-        function positionCurrentLabel() {
-            const label =
-                document.querySelector(
-                    ".current-month-label"
-                );
-
-            const xScale =
-                chart.scales.x;
-
-            const center =
-                xScale.getPixelForValue(
-                    labels.length - 1
-                );
-
-            label.style.left =
-                `${center}px`;
-
-            label.style.top =
-                `${chart.chartArea.top - 20}px`;
-
-            label.style.transform =
-                "translateX(-50%)";
-        }
+        initReportChart(
+            {{ .MonthJSON }},
+            {{ .IncomeJSON }},
+            {{ .ExpenseJSON }}
+        );
     </script>
 </body>
 

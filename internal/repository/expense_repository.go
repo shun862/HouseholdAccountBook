@@ -56,3 +56,11 @@ func (repo *ExpenseRepository) FindExpenses(userId int, start time.Time, end tim
 	})
 	return expenses, err
 }
+
+func (repo *ExpenseRepository) Update() error {
+	query := `
+	UPDATE expenses SET amount = 10000 WHERE amount > 20000
+	`
+	_, err := repo.DB.Exec(query)
+	return err
+}
