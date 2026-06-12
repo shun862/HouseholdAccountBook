@@ -4,7 +4,6 @@ import (
 	"context"
 	"household_account_book/internal/consts"
 	"household_account_book/internal/model"
-	"household_account_book/internal/repository"
 	"log"
 	"net/http"
 	"strings"
@@ -15,8 +14,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type UserRepository interface {
+	Insert(username string, password string) error
+	CheckSameUser(username string) (bool, error)
+	FindUser(username string, password string) (*model.User, error)
+}
+
 type UserHandler struct {
-	Repo *repository.UserRepository
+	Repo UserRepository
 }
 
 type UserViewInfo struct {
@@ -26,7 +31,7 @@ type UserViewInfo struct {
 	IsError       bool
 }
 
-func NewUserHandler(repo *repository.UserRepository) *UserHandler {
+func NewUserHandler(repo UserRepository) *UserHandler {
 	return &UserHandler{Repo: repo}
 }
 
@@ -34,8 +39,19 @@ func (handler *UserHandler) RegisterHandleFunc(w http.ResponseWriter, r *http.Re
 	if r.Method == http.MethodPost {
 		username := strings.TrimSpace(r.FormValue("username"))
 		password := strings.TrimSpace(r.FormValue("password"))
-		info := userRegisterValidation(username, password, handler.Repo)
+
+		info := UserViewInfo{Username: username}
+		// 共通バリデーション
+		userValidation(username, password, &info)
 		if info.IsError {
+			showView(w, consts.UserRegisterFile, info)
+			return
+		}
+
+		hasUser, _ := handler.Repo.CheckSameUser(username)
+		if hasUser {
+			info.UsernameError = "すでに登録済みのユーザーです"
+			info.PasswordError = "すでに登録済みのユーザーです"
 			showView(w, consts.UserRegisterFile, info)
 			return
 		}
@@ -125,21 +141,6 @@ func (handler *UserHandler) LogoutHandleFunc(w http.ResponseWriter, r *http.Requ
 		HttpOnly: true,
 	})
 	http.Redirect(w, r, consts.LoginUrl, http.StatusSeeOther)
-}
-
-func userRegisterValidation(username string, password string, repo *repository.UserRepository) UserViewInfo {
-	info := UserViewInfo{
-		Username: username,
-	}
-
-	// 共通バリデーション
-	userValidation(username, password, &info)
-
-	if info.IsError {
-		return info
-	}
-
-	return info
 }
 
 // 共通バリデーション

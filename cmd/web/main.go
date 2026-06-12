@@ -18,7 +18,7 @@ import (
 
 func main() {
 	// DB取得
-	db, err := db.OpenDB()
+	db, err := db.OpenDB(consts.DBName)
 	if err != nil {
 		log.Fatal(err)
 	}

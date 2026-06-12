@@ -6,9 +6,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func OpenDB() (*sql.DB, error) {
+func OpenDB(path string) (*sql.DB, error) {
 	// DB取得
-	db, err := sql.Open("sqlite3", "household_account_book.db")
+	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return nil, err
 	}

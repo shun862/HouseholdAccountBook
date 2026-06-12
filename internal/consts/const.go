@@ -28,6 +28,9 @@ const (
 	ExpenseReportViewName = "report"
 )
 
+// DB
+const DBName = "household_account_book.db"
+
 // 認証情報
 const JwtKey = "anhifsjsa32gjjis"
 const TokenName = "auth_token"
